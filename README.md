@@ -1,61 +1,207 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel Project Setup
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This README will guide you through setting up and running the Laravel project locally.
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Ensure the following tools are installed on your system:
+🔧 Tech Stack:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   PHP >= 8.4
+-   Laravel = 12
+-   Composer
+-   Node.js >= 24.x
+-   NPM >= 8.x
+-   MySQL or any supported database
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Installation & Setup
 
-## Learning Laravel
+Follow the steps below to get started:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+# Clone the repository
+git clone https://github.com/shayanahmad1999/laravel-scout.git
+cd laravel-scout
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Install PHP dependencies
+composer install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Initialize and install Node.js dependencies
+npm install
 
-## Laravel Sponsors
+# Build frontend assets
+npm run build
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Run the development server (optional during setup)
+npm run dev
 
-### Premium Partners
+# Copy and set up the environment configuration
+cp .env.example .env
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Create the Typesense Cloud Account and Generate API key and past below
+SCOUT_DRIVER=typesense
 
-## Contributing
+TYPESENSE_PROTOCOL=https
+TYPESENSE_HOST=Nodes
+TYPESENSE_PORT=Nodes_Https
+TYPESENSE_API_KEY=Admin_API_Key
+TYPESENSE_PATH=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Generate application key
+php artisan key:generate
 
-## Code of Conduct
+# Run database migrations
+php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Run the development server again
+php artisan serve
+npm run dev
 
-## Security Vulnerabilities
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Install the Scout with Typesense From Scratch
 
-## License
+Laravel Scout provides a simple, driver-based solution for adding full-text search to your Eloquent models. Using model observers, Scout will automatically keep your search indexes in sync with your Eloquent records.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📦 Prerequisites
+
+-   PHP & Composer installed
+-   A Laravel project (for package installation)
+-   Create Account of Typesense Cloud
+
+---
+
+## 🚀 1) Create the Account of Typesense Cloud
+
+1. Open **https://typesense.org/**
+2. Click **Typesense Cloud** → **Signup**.
+3. **Generate the Api keys**.
+
+the Token Look like that
+=== Typesense Cloud: i8mqrdoev6fbt7lpp ===
+
+Admin API Key:
+37******************************m
+
+Search Only API Key:
+Xb*************************VG
+
+Nodes:
+i8**************************et [https:2*8]
+
+---
+
+## 🧩 2) Install in Your Laravel Project
+
+Run these in your project root:
+
+```bash
+# Install the package Scout
+composer require laravel/scout
+
+# Publish the Scout File
+php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
+
+# Define the Searchable Class in Model
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
+
+class Movie extends Model
+{
+    use Searchable;
+}
+
+# Define Method in Model
+public function toSearchableArray(): array
+{
+    return array_merge($this->toArray(), [
+        'id' => (string) $this->id,
+        'title' => $this->title,
+        'description' => $this->description,
+        'author' => $this->author,
+        'release_year' => (string) $this->release_year,
+        'created_at' => $this->created_at->timestamp,
+    ]);
+}
+
+# Install the package Typesense
+composer require typesense/typesense-php
+
+# update .env file past the aapi key here below
+SCOUT_DRIVER=typesense
+
+TYPESENSE_PROTOCOL=https
+TYPESENSE_HOST=Nodes
+TYPESENSE_PORT=Nodes_Https
+TYPESENSE_API_KEY=Admin_API_Key
+TYPESENSE_PATH=
+
+# add some code of Searchable in Scout.php file in the model-settings section
+Movie::class => [
+    'collection-schema' => [
+        'fields' => [
+            [
+                'name' => 'id',
+                'type' => 'string',
+            ],
+            [
+                'name' => 'title',
+                'type' => 'string',
+            ],
+            [
+                'name' => 'description',
+                'type' => 'string',
+            ],
+            [
+                'name' => 'author',
+                'type' => 'string',
+            ],
+            [
+                'name' => 'release_year',
+                'type' => 'string',
+            ],
+            [
+                'name' => 'created_at',
+                'type' => 'int64',
+            ],
+        ],
+        'default_sorting_field' => 'created_at',
+    ],
+    'search-parameters' => [
+        'query_by' => 'title'
+    ],
+],
+
+# import the model
+php artisan scout:import "App\Models\Movie"
+
+# Add search input in the view file
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <form action="" method="GET">
+        <label for="">Search using Scout Package</label>
+        <input type="text" name="search" class="form-control" placeholder="🔍 Search movies...">
+    </form>
+</div>
+
+# Logic Code in Controller
+public function index(Request $request)
+    {
+        $search = $request->search;
+
+        $movies = Movie::search($search)->paginate(9) ?? Movie::latest()->paginate(9);
+
+        return view('movies.index', compact('movies'));
+    }
+
+```
+
+---
+
+Happy Laravel Scout with Typesense! 🎉
