@@ -20,7 +20,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <form action="" method="GET">
                 <label for="">Search using Scout Package</label>
-                <input type="text" name="search" class="form-control w-50" placeholder="🔍 Search movies...">
+                <input type="text" name="search" class="form-control" placeholder="🔍 Search movies...">
             </form>
         </div>
 
