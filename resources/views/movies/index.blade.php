@@ -16,6 +16,14 @@
             </div>
         @endif
 
+        <!-- Search using Scout Package -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form action="" method="GET">
+                <label for="">Search using Scout Package</label>
+                <input type="text" name="search" class="form-control w-50" placeholder="🔍 Search movies...">
+            </form>
+        </div>
+
         <!-- Search + Add -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <input type="text" class="form-control w-50" id="searchInput" placeholder="🔍 Search movies...">

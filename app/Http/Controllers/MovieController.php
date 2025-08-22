@@ -7,9 +7,20 @@ use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::latest()->paginate(9);
+        $search = $request->search;
+
+        // --- With out using scout ---//
+        // $movies = Movie::query()
+        //     ->when($search, function ($query, $search) {
+        //         $query->where('title', 'like', "%{$search}%");
+        //     })
+        //     ->latest()->paginate(9);
+
+        // --- With using scout ---//
+        $movies = Movie::search($search)->paginate(9) ?? Movie::latest()->paginate(9);
+
         return view('movies.index', compact('movies'));
     }
 
